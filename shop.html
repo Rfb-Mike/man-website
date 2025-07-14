@@ -12,13 +12,14 @@
       JPY: 14.16, CNY: 0.69, INR: 8.27, BRL: 0.54
     };
 
-      function updatePrices() {
+       function updatePrices() {
       const currency = document.getElementById('currency-select').value;
       document.querySelectorAll('[data-price-ghs]').forEach(el => {
         const ghsPrice = parseFloat(el.getAttribute('data-price-ghs'));
         const converted = (ghsPrice * exchangeRates[currency]).toFixed(2);
         el.textContent = `${currency} ${converted}`;
       });
+      updateCartUI();
     }
   </script>
 </head>
@@ -26,7 +27,7 @@
 
   <!-- Header -->
   <header class="flex items-center justify-between p-4 shadow-md">
-    <a href="index.html"><img src="images/IMG_6891.PNG" alt="M.A.N Logo" class="h-10"></a>
+    <a href="index.html"><img src="images/IMG_6891.PNG" alt="M.A.N Logo" class="h-10" /></a>
     <nav class="hidden md:flex space-x-4">
       <a href="index.html">Home</a>
       <a href="shop.html" class="font-bold underline">Shop</a>
@@ -34,20 +35,27 @@
       <a href="about.html">About Us</a>
       <a href="contact.html">Contact</a>
     </nav>
-    <select id="currency-select" onchange="updatePrices()" class="p-2 border rounded">
-      <option value="GHS">GHS - Ghana Cedi</option>
-      <option value="USD">USD - US Dollar</option>
-      <option value="EUR">EUR - Euro</option>
-      <option value="GBP">GBP - British Pound</option>
-      <option value="NGN">NGN - Nigerian Naira</option>
-      <option value="ZAR">ZAR - South African Rand</option>
-      <option value="CAD">CAD - Canadian Dollar</option>
-      <option value="AUD">AUD - Australian Dollar</option>
-      <option value="JPY">JPY - Japanese Yen</option>
-      <option value="CNY">CNY - Chinese Yuan</option>
-      <option value="INR">INR - Indian Rupee</option>
-      <option value="BRL">BRL - Brazilian Real</option>
-    </select>
+    <div class="flex items-center space-x-2">
+      <select id="currency-select" onchange="updatePrices()" class="p-2 border rounded">
+        <option value="GHS">GHS - Ghana Cedi</option>
+        <option value="USD">USD - US Dollar</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="GBP">GBP - British Pound</option>
+        <option value="NGN">NGN - Nigerian Naira</option>
+        <option value="ZAR">ZAR - South African Rand</option>
+        <option value="CAD">CAD - Canadian Dollar</option>
+        <option value="AUD">AUD - Australian Dollar</option>
+        <option value="JPY">JPY - Japanese Yen</option>
+        <option value="CNY">CNY - Chinese Yuan</option>
+        <option value="INR">INR - Indian Rupee</option>
+        <option value="BRL">BRL - Brazilian Real</option>
+      </select>
+      <!-- Cart Icon -->
+      <button onclick="toggleCart()" class="relative ml-4">
+        🛒
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">0</span>
+      </button>
+    </div>
   </header>
 
   <!-- Shop Section -->
@@ -57,50 +65,94 @@
 
       <!-- Product 1 -->
       <div class="border p-4 rounded shadow">
-        <img src="images/IMG_6911.PNG" alt="White T-Shirt 1" class="w-full h-60 object-cover rounded mb-2">
+        <img src="images/IMG_6911.PNG" alt="White T-Shirt 1" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="190">GHS 190</p>
-        <a 
-          href="https://wa.me/233599342432?text=Hi%2C%20I%20want%20to%20order%20the%20White%20T-Shirt%20for%20GHS%20190"
-          target="_blank"
-          class="mt-2 inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >Order Now</a>
+        <button onclick="addToCart('White T-Shirt', 190)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
       </div>
 
       <!-- Product 2 -->
       <div class="border p-4 rounded shadow">
-        <img src="images/IMG_9464.PNG" alt="White T-Shirt 2" class="w-full h-60 object-cover rounded mb-2">
+        <img src="images/IMG_9464.PNG" alt="White T-Shirt 2" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="200">GHS 200</p>
-        <a 
-          href="https://wa.me/233599342432?text=Hi%2C%20I%20want%20to%20order%20the%20White%20T-Shirt%20for%20GHS%20200"
-          target="_blank"
-          class="mt-2 inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >Order Now</a>
+        <button onclick="addToCart('White T-Shirt', 200)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
       </div>
 
       <!-- Product 3 -->
       <div class="border p-4 rounded shadow">
-        <img src="images/IMG_9462.PNG" alt="White T-Shirt 3" class="w-full h-60 object-cover rounded mb-2">
+        <img src="images/IMG_9464.PNG" alt="White T-Shirt 3" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="220">GHS 220</p>
-        <a 
-          href="https://wa.me/233599342432?text=Hi%2C%20I%20want%20to%20order%20the%20White%20T-Shirt%20for%20GHS%20220"
-          target="_blank"
-          class="mt-2 inline-block bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-        >Order Now</a>
+        <button onclick="addToCart('White T-Shirt', 220)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
       </div>
 
     </div>
   </main>
+
+  <!-- Cart Sidebar -->
+  <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-80 bg-white shadow-lg p-6 z-50 hidden overflow-y-auto">
+    <h2 class="text-xl font-bold mb-4">Your Cart</h2>
+    <div id="cart-items" class="space-y-4"></div>
+    <p class="mt-4 font-semibold">Total: <span id="cart-total">GHS 0</span></p>
+    <button onclick="checkoutCart()" class="mt-4 bg-black text-white px-4 py-2 rounded w-full">Checkout via WhatsApp</button>
+    <button onclick="toggleCart()" class="mt-2 text-sm text-red-500 underline w-full">Close Cart</button>
+  </div>
 
   <!-- Footer -->
   <footer class="bg-black text-white py-6 text-center mt-10">
     <p>© 2025 M.A.N Clothing. All rights reserved.</p>
   </footer>
 
+  <!-- Shopping Cart Script -->
   <script>
+    let cart = [];
+
+    function addToCart(name, priceGHS) {
+      const item = cart.find(i => i.name === name);
+      if (item) {
+        item.qty++;
+      } else {
+        cart.push({ name, qty: 1, priceGHS });
+      }
+      updateCartUI();
+    }
+
+    function toggleCart() {
+      document.getElementById('cart-sidebar').classList.toggle('hidden');
+    }
+
+    function updateCartUI() {
+      const currency = document.getElementById('currency-select').value;
+      const rate = exchangeRates[currency];
+      let cartHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const price = item.priceGHS * item.qty;
+        const converted = (price * rate).toFixed(2);
+        cartHTML += `<div>
+          <p class="font-bold">${item.name} x${item.qty}</p>
+          <p>${currency} ${converted}</p>
+        </div>`;
+        total += price;
+      });
+
+      document.getElementById('cart-items').innerHTML = cartHTML;
+      document.getElementById('cart-total').textContent = `${currency} ${(total * rate).toFixed(2)}`;
+      document.getElementById('cart-count').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+    }
+
+    function checkoutCart() {
+      let text = "Hi, I want to order:\n";
+      cart.forEach(item => {
+        text += `${item.name} x${item.qty}\n`;
+      });
+      window.open(`https://wa.me/233599342432?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
     window.onload = updatePrices;
   </script>
+
 </body>
 </html>

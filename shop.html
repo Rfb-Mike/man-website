@@ -12,7 +12,7 @@
       JPY: 14.16, CNY: 0.69, INR: 8.27, BRL: 0.54
     };
 
-       function updatePrices() {
+      function updatePrices() {
       const currency = document.getElementById('currency-select').value;
       document.querySelectorAll('[data-price-ghs]').forEach(el => {
         const ghsPrice = parseFloat(el.getAttribute('data-price-ghs'));
@@ -50,6 +50,7 @@
         <option value="INR">INR - Indian Rupee</option>
         <option value="BRL">BRL - Brazilian Real</option>
       </select>
+
       <!-- Cart Icon -->
       <button onclick="toggleCart()" class="relative ml-4">
         🛒
@@ -68,7 +69,11 @@
         <img src="images/IMG_6911.PNG" alt="White T-Shirt 1" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="190">GHS 190</p>
-        <button onclick="addToCart('White T-Shirt', 190)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
+        <select id="size-1" class="mt-2 p-1 border rounded w-full">
+          <option disabled selected>Select Size</option>
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+        <button onclick="addToCart('White T-Shirt', 190, document.getElementById('size-1').value)" class="mt-2 bg-black text-white px-4 py-2 rounded w-full">Add to Cart</button>
       </div>
 
       <!-- Product 2 -->
@@ -76,15 +81,23 @@
         <img src="images/IMG_9464.PNG" alt="White T-Shirt 2" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="200">GHS 200</p>
-        <button onclick="addToCart('White T-Shirt', 200)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
+        <select id="size-2" class="mt-2 p-1 border rounded w-full">
+          <option disabled selected>Select Size</option>
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+        <button onclick="addToCart('White T-Shirt 2', 200, document.getElementById('size-2').value)" class="mt-2 bg-black text-white px-4 py-2 rounded w-full">Add to Cart</button>
       </div>
 
       <!-- Product 3 -->
       <div class="border p-4 rounded shadow">
-        <img src="images/IMG_9464.PNG" alt="White T-Shirt 3" class="w-full h-60 object-cover rounded mb-2" />
+        <img src="images/IMG_9462.PNG" alt="White T-Shirt 3" class="w-full h-60 object-cover rounded mb-2" />
         <h3 class="text-lg font-bold">White T-Shirt</h3>
         <p data-price-ghs="220">GHS 220</p>
-        <button onclick="addToCart('White T-Shirt', 220)" class="mt-2 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Add to Cart</button>
+        <select id="size-3" class="mt-2 p-1 border rounded w-full">
+          <option disabled selected>Select Size</option>
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+        <button onclick="addToCart('White T-Shirt 3', 220, document.getElementById('size-3').value)" class="mt-2 bg-black text-white px-4 py-2 rounded w-full">Add to Cart</button>
       </div>
 
     </div>
@@ -96,6 +109,7 @@
     <div id="cart-items" class="space-y-4"></div>
     <p class="mt-4 font-semibold">Total: <span id="cart-total">GHS 0</span></p>
     <button onclick="checkoutCart()" class="mt-4 bg-black text-white px-4 py-2 rounded w-full">Checkout via WhatsApp</button>
+    <button onclick="emptyCart()" class="mt-2 bg-red-500 text-white px-4 py-2 rounded w-full">Empty Cart</button>
     <button onclick="toggleCart()" class="mt-2 text-sm text-red-500 underline w-full">Close Cart</button>
   </div>
 
@@ -108,13 +122,39 @@
   <script>
     let cart = [];
 
-    function addToCart(name, priceGHS) {
-      const item = cart.find(i => i.name === name);
+    function addToCart(name, priceGHS, size) {
+      if (!size || size === "Select Size") {
+        alert("Please select a size");
+        return;
+      }
+      const item = cart.find(i => i.name === name && i.size === size);
       if (item) {
         item.qty++;
       } else {
-        cart.push({ name, qty: 1, priceGHS });
+        cart.push({ name, qty: 1, priceGHS, size });
       }
+      updateCartUI();
+    }
+
+    function removeFromCart(name, size) {
+      cart = cart.filter(i => !(i.name === name && i.size === size));
+      updateCartUI();
+    }
+
+    function decreaseQty(name, size) {
+      const item = cart.find(i => i.name === name && i.size === size);
+      if (item) {
+        item.qty--;
+        if (item.qty <= 0) {
+          removeFromCart(name, size);
+        } else {
+          updateCartUI();
+        }
+      }
+    }
+
+    function emptyCart() {
+      cart = [];
       updateCartUI();
     }
 
@@ -131,10 +171,16 @@
       cart.forEach(item => {
         const price = item.priceGHS * item.qty;
         const converted = (price * rate).toFixed(2);
-        cartHTML += `<div>
-          <p class="font-bold">${item.name} x${item.qty}</p>
-          <p>${currency} ${converted}</p>
-        </div>`;
+        cartHTML += `
+          <div class="border-b pb-3 mb-3">
+            <p class="font-bold">${item.name} (Size: ${item.size}) x${item.qty}</p>
+            <p>${currency} ${converted}</p>
+            <div class="flex space-x-2 mt-1">
+              <button onclick="decreaseQty('${item.name}', '${item.size}')" class="text-sm bg-gray-200 px-2 py-1 rounded">➖</button>
+              <button onclick="removeFromCart('${item.name}', '${item.size}')" class="text-sm text-red-500 underline">Remove</button>
+            </div>
+          </div>
+        `;
         total += price;
       });
 
@@ -146,7 +192,7 @@
     function checkoutCart() {
       let text = "Hi, I want to order:\n";
       cart.forEach(item => {
-        text += `${item.name} x${item.qty}\n`;
+        text += `${item.name} (Size: ${item.size}) x${item.qty}\n`;
       });
       window.open(`https://wa.me/233599342432?text=${encodeURIComponent(text)}`, '_blank');
     }
